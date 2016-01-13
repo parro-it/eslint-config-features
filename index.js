@@ -43,6 +43,11 @@ function pairValueIsTrue(key, value) {
   return !!value;
 }
 
+function trueValues(key, value) {
+  return [value, true];
+}
+
+
 function valueIsTrue(value) {
   return !!value;
 }
@@ -51,9 +56,10 @@ function valueIsTrue(value) {
 var features = babelFeatures.test();
 var workingFeatures = filter(features, pairValueIsTrue);
 var eslintFeaturesObj = map(workingFeatures, convertToEslintFeature);
+var eslintFeaturesArray = flatten(values(eslintFeaturesObj).filter(valueIsTrue));
+
 var eslintFeatures = {
-  ecmaFeatures: flatten(values(eslintFeaturesObj)
-    .filter(valueIsTrue))
+  ecmaFeatures: map(eslintFeaturesArray, trueValues)
 };
 
 module.exports = eslintFeatures;
