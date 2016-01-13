@@ -1,5 +1,35 @@
 'use strict';
 
+const fieldMapping = {
+  'es3-member-expression-literals': null,
+  'es3-property-literals': null,
+  'es5-property-mutators': null,
+  'es2015-arrow-functions': 'arrowFunctions',
+  'es2015-block-scoping': true,
+  'es2015-classes': 'classes',
+  'es2015-computed-properties': 'objectLiteralComputedProperties',
+  'es2015-constants': 'blockBindings',
+  'es2015-destructuring': 'destructuring',
+  'es2015-for-of': 'forOf',
+  'es2015-function-name': null,
+  'es2015-literals': ['binaryLiterals', 'octalLiterals'],
+  'es2015-object-super': 'superInFunctions',
+  'es2015-parameters': 'defaultParams',
+  'es2015-shorthand-properties': ['objectLiteralShorthandProperties'],
+  'es2015-spread': 'spread',
+  'es2015-sticky-regex': 'regexYFlag',
+  'es2015-template-literals': 'templateStrings',
+  'es2015-typeof-symbol': null,
+  'es2015-unicode-regex': 'regexUFlag',
+  'es2015-modules': 'modules',
+  'es2015-generators': 'generators',
+  'es3-function-scope': null
+};
+
+
 module.exports = function eslintConfigFeatures() {
-  return 42;
-}
+
+};
+
+const features = require('babel-features').test();
+console.log(features);
