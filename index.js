@@ -5,7 +5,7 @@ const fieldMapping = {
   'es3-property-literals': null,
   'es5-property-mutators': null,
   'es2015-arrow-functions': 'arrowFunctions',
-  'es2015-block-scoping': true,
+  'es2015-block-scoping': 'blockBindings',
   'es2015-classes': 'classes',
   'es2015-computed-properties': 'objectLiteralComputedProperties',
   'es2015-constants': 'blockBindings',
