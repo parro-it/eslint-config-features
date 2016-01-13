@@ -11,14 +11,14 @@
   },
   "keywords": [],
   "engines": {
-    "node": ">=5"
+    "node": ">=0.10"
   },
   "eslintConfig": {
-    "extends": "js"
+    "extends": "defaults/configurations/gulp"
   },
   "devDependencies": {
     "eslint": "^1.10.3",
-    "eslint-config-js": "^2.0.2",
+    "eslint-config-defaults": "^8.0.2",
     "faucet": "0.0.1",
     "tape": "^4.2.2"
   },
@@ -26,6 +26,10 @@
     "index.js"
   ],
   "dependencies": {
-    "babel-features": "^2.0.0-beta"
+    "arr-flatten": "^1.0.1",
+    "babel-features": "^2.0.0-beta",
+    "filter-obj": "^1.1.0",
+    "map-obj": "^1.0.1",
+    "object-values": "^1.0.0"
   }
 }

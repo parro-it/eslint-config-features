@@ -1,6 +1,13 @@
 'use strict';
 
-const fieldMapping = {
+var filter = require('filter-obj');
+var map = require('map-obj');
+var values = require('object-values');
+var babelFeatures = require('babel-features');
+var flatten = require('arr-flatten');
+
+
+var fieldMapping = {
   'es3-member-expression-literals': null,
   'es3-property-literals': null,
   'es5-property-mutators': null,
@@ -27,9 +34,27 @@ const fieldMapping = {
 };
 
 
-module.exports = function eslintConfigFeatures() {
 
+function convertToEslintFeature(babelFeature) {
+  return [babelFeature, fieldMapping[babelFeature]];
+}
+
+function pairValueIsTrue(key, value) {
+  return !!value;
+}
+
+function valueIsTrue(value) {
+  return !!value;
+}
+
+
+var features = babelFeatures.test();
+var workingFeatures = filter(features, pairValueIsTrue);
+var eslintFeaturesObj = map(workingFeatures, convertToEslintFeature);
+var eslintFeatures = {
+  ecmaFeatures: flatten(values(eslintFeaturesObj)
+    .filter(valueIsTrue))
 };
 
-const features = require('babel-features').test();
-console.log(features);
+module.exports = eslintFeatures;
+console.log(eslintFeatures);
