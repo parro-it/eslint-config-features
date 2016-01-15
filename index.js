@@ -63,4 +63,3 @@ var eslintFeatures = {
 };
 
 module.exports = eslintFeatures;
-console.log(eslintFeatures);
