@@ -1,6 +1,6 @@
 # eslint-config-features
 
-
+> Automatically configure eslint ecmaFeatures base on your package.json `engines` field.
 
 [![Travis Build Status](https://img.shields.io/travis/parro-it/eslint-config-features.svg)](http://travis-ci.org/parro-it/eslint-config-features)
 [![NPM module](https://img.shields.io/npm/v/eslint-config-features.svg)](https://npmjs.org/package/eslint-config-features)
