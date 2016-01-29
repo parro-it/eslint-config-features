@@ -1,8 +1,6 @@
 'use strict';
 
-var filter = require('filter-obj');
 var map = require('map-obj');
-var values = require('object-values');
 var flatten = require('arr-flatten');
 var firstSatisfied = require('semver-first-satisfied');
 var autoBabelPlugins = require('babel-preset-es2015-auto/data.json');
