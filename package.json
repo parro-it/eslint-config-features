@@ -40,6 +40,6 @@
     "babelplugin-to-eslintrule": "^1.0.1",
     "map-obj": "^1.0.1",
     "read-pkg-up": "^1.0.1",
-    "semver-first-satisfied": "^1.0.0"
+    "semver-first-satisfied": "^1.1.0"
   }
 }
