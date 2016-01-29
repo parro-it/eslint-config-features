@@ -1,15 +1,22 @@
 {
   "name": "eslint-config-features",
   "version": "1.0.2",
-  "description": "Automatically configure eslint ecmaFeatures base on your package.json `engines` field",
+  "description": "Automatically configure eslint ecmaFeatures according to package.json `engines` field.",
   "repository": "parro-it/eslint-config-features",
   "license": "MIT",
   "author": "parro-it",
   "scripts": {
-    "test": "eslint . && node test | faucet",
-    "lint": "eslint ."
+    "test": "eslint . && node test | faucet"
   },
-  "keywords": ["eslint", "config", "ecmaFeatures", "features", "automatically"],
+  "keywords": [
+    "eslint",
+    "config",
+    "auto-babel",
+    "ecmaFeatures",
+    "features",
+    "babel-features",
+    "automatically"
+  ],
   "engines": {
     "node": ">=0.10"
   },
@@ -26,12 +33,13 @@
     "index.js"
   ],
   "dependencies": {
+    "arr-diff": "^2.0.0",
     "arr-flatten": "^1.0.1",
-    "auto-babel": "^0.4.0",
+    "array-differ": "^1.0.0",
+    "babel-preset-es2015-auto": "github:jakepusateri/auto-babel#babel-preset",
     "babelplugin-to-eslintrule": "^1.0.1",
-    "filter-obj": "^1.1.0",
     "map-obj": "^1.0.1",
-    "object-values": "^1.0.0",
+    "read-pkg-up": "^1.0.1",
     "semver-first-satisfied": "^1.0.0"
   }
 }

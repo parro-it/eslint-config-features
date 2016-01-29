@@ -3,63 +3,115 @@
 var filter = require('filter-obj');
 var map = require('map-obj');
 var values = require('object-values');
-var babelFeatures = require('babel-features');
 var flatten = require('arr-flatten');
+var firstSatisfied = require('semver-first-satisfied');
+var autoBabelPlugins = require('babel-preset-es2015-auto/data.json');
+var babel2eslint = require('babelplugin-to-eslintrule');
+var arrayDiffer = require('arr-diff');
+var readPkgUp = require('read-pkg-up');
 
-
-var fieldMapping = {
-  'es3-member-expression-literals': null,
-  'es3-property-literals': null,
-  'es5-property-mutators': null,
-  'es2015-arrow-functions': 'arrowFunctions',
-  'es2015-block-scoping': 'blockBindings',
-  'es2015-classes': 'classes',
-  'es2015-computed-properties': 'objectLiteralComputedProperties',
-  'es2015-constants': 'blockBindings',
-  'es2015-destructuring': 'destructuring',
-  'es2015-for-of': 'forOf',
-  'es2015-function-name': null,
-  'es2015-literals': ['binaryLiterals', 'octalLiterals'],
-  'es2015-object-super': 'superInFunctions',
-  'es2015-parameters': 'defaultParams',
-  'es2015-shorthand-properties': ['objectLiteralShorthandProperties'],
-  'es2015-spread': 'spread',
-  'es2015-sticky-regex': 'regexYFlag',
-  'es2015-template-literals': 'templateStrings',
-  'es2015-typeof-symbol': null,
-  'es2015-unicode-regex': 'regexUFlag',
-  'es2015-modules': 'modules',
-  'es2015-generators': 'generators',
-  'es3-function-scope': null
-};
-
-
+var allBabelFeatures = [
+  'babel-plugin-transform-es2015-template-literals',
+  'babel-plugin-transform-es2015-literals',
+  'babel-plugin-transform-es2015-function-name',
+  'babel-plugin-transform-es2015-arrow-functions',
+  'babel-plugin-transform-es2015-block-scoped-functions',
+  'babel-plugin-transform-es2015-classes',
+  'babel-plugin-transform-es2015-object-super',
+  'babel-plugin-transform-es2015-shorthand-properties',
+  'babel-plugin-transform-es2015-computed-properties',
+  'babel-plugin-transform-es2015-for-of',
+  'babel-plugin-transform-es2015-sticky-regex',
+  'babel-plugin-transform-es2015-unicode-regex',
+  'babel-plugin-check-es2015-constants',
+  'babel-plugin-transform-es2015-spread',
+  'babel-plugin-transform-es2015-parameters',
+  'babel-plugin-transform-es2015-destructuring',
+  'babel-plugin-transform-es2015-block-scoping',
+  'babel-plugin-transform-es2015-typeof-symbol',
+  'babel-plugin-transform-es2015-modules-commonjs',
+  'babel-plugin-transform-regenerator'
+];
 
 function convertToEslintFeature(babelFeature) {
-  return [babelFeature, fieldMapping[babelFeature]];
+  return babel2eslint(babelFeature.slice(23));
 }
 
-function pairValueIsTrue(key, value) {
-  return !!value;
+function keysToObject(_, key) {
+  return [key, true];
 }
 
-function trueValues(key, value) {
-  return [value, true];
+function toEnginesArray(engine, range) {
+  return [0,[engine, range]];
 }
 
+var engines = {
+  node: {
+    versionMatch: function (ver) {
+      return /^v\d+/.test(ver);
+    },
+    toSemVer: function (ver) {
+      return ver.slice(1);
+    },
+    keyFromVersion: function (ver) {
+      return 'v' + ver;
+    }
+  },
 
-function valueIsTrue(value) {
-  return !!value;
-}
+  iojs: {
+    versionMatch: function (ver) {
+      return /^iojs-v\d+/.test(ver);
+    },
+    toSemVer: function (ver) {
+      return ver.slice(6);
+    },
+    keyFromVersion: function (ver) {
+      return 'iojs-v' + ver;
+    }
+  }
+};
 
-
-var features = babelFeatures.test();
-var workingFeatures = filter(features, pairValueIsTrue);
-var eslintFeaturesObj = map(workingFeatures, convertToEslintFeature);
-var eslintFeaturesArray = flatten(values(eslintFeaturesObj).filter(valueIsTrue));
 
 var eslintFeatures = {
-  ecmaFeatures: map(eslintFeaturesArray, trueValues)
+  ecmaFeatures: null
 };
+
+eslintFeatures.versionForRange = function versionForRange(engine, range) {
+  if (!engines.hasOwnProperty(engine)) {
+    throw new Error('Unsupported engine ' + engine);
+  }
+  var eng = engines[engine];
+  var versions = Object.keys(autoBabelPlugins);
+
+  var engineVersions = versions
+    .filter(eng.versionMatch)
+    .map(eng.toSemVer);
+
+  return firstSatisfied(range, engineVersions);
+};
+
+eslintFeatures.featureOfVersion = function featureOfVersion(engine, version) {
+  var versionKey = engines[engine].keyFromVersion(version);
+  var babelFeatures = autoBabelPlugins[versionKey];
+  var noBabelFeatures = arrayDiffer(allBabelFeatures, babelFeatures);
+  var eslintFeatures = noBabelFeatures.map(convertToEslintFeature);
+  return map(flatten(eslintFeatures), keysToObject);
+};
+
+eslintFeatures.findSupportedEngines = function findSupportedEngines(cwd) {
+  cwd = cwd || process.cwd();
+  var engines = readPkgUp.sync({ cwd: cwd }).pkg.engines;
+  return map(engines, toEnginesArray)[0];
+};
+
+eslintFeatures.findEcmaFeatures = function findEcmaFeatures(cwd) {
+  var pkgEngines = eslintFeatures.findSupportedEngines(cwd);
+  var minVersion = eslintFeatures.versionForRange(pkgEngines[0], pkgEngines[1]);
+  var features = eslintFeatures.featureOfVersion(pkgEngines[0], minVersion);
+  return features;
+};
+
+eslintFeatures.ecmaFeatures = eslintFeatures.findEcmaFeatures();
+
 
 module.exports = eslintFeatures;
