@@ -24,7 +24,6 @@
     "extends": "defaults/configurations/gulp"
   },
   "devDependencies": {
-    "debug": "^2.2.0",
     "eslint": "^1.10.3",
     "eslint-config-defaults": "^8.0.2",
     "faucet": "0.0.1",
@@ -41,6 +40,7 @@
     "babelplugin-to-eslintrule": "^1.0.1",
     "map-obj": "^1.0.1",
     "read-pkg-up": "^1.0.1",
+    "debug": "^2.2.0",
     "semver-first-satisfied": "^1.1.0"
   }
 }
