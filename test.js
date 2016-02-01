@@ -24,6 +24,7 @@ test('findSupportedEngines - return engines field from pkg.json', function(t) {
 test('featureOfVersion - return ecmaFeatures for a version', function(t) {
   var result = eslintConfigFeatures.featureOfVersion('node','5.0.0');
   t.deepEqual(result, {
+    generators: true,
     arrowFunctions: true,
     binaryLiterals: true,
     blockBindings: true,

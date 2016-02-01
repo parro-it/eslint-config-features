@@ -7,6 +7,7 @@ var autoBabelPlugins = require('babel-preset-es2015-auto/data.json');
 var babel2eslint = require('babelplugin-to-eslintrule');
 var arrayDiffer = require('arr-diff');
 var readPkgUp = require('read-pkg-up');
+var debug = require('debug')('eslint-config-features');
 
 var allBabelFeatures = [
   'babel-plugin-transform-es2015-template-literals',
@@ -90,22 +91,36 @@ eslintFeatures.versionForRange = function versionForRange(engine, range) {
 
 eslintFeatures.featureOfVersion = function featureOfVersion(engine, version) {
   var versionKey = engines[engine].keyFromVersion(version);
+  debug('versionKey:' +versionKey);
   var babelFeatures = autoBabelPlugins[versionKey];
+  debug('babelFeatures:' + babelFeatures
+      .join(',')
+      .replace(/babel-plugin-transform-/g, ''));
   var noBabelFeatures = arrayDiffer(allBabelFeatures, babelFeatures);
+  debug('Superfluos Babel Features:' + noBabelFeatures
+      .join(',')
+      .replace(/babel-plugin-transform-/g, ''));
   var eslintFeatures = noBabelFeatures.map(convertToEslintFeature);
+  debug('eslintFeatures:' +eslintFeatures);
   return map(flatten(eslintFeatures), keysToObject);
 };
 
 eslintFeatures.findSupportedEngines = function findSupportedEngines(cwd) {
   cwd = cwd || process.cwd();
+  debug('findEcmaFeatures - cwd:' +cwd);
   var engines = readPkgUp.sync({ cwd: cwd }).pkg.engines;
   return map(engines, toEnginesArray)[0];
 };
 
 eslintFeatures.findEcmaFeatures = function findEcmaFeatures(cwd) {
+
   var pkgEngines = eslintFeatures.findSupportedEngines(cwd);
+  debug('engine required: ' + pkgEngines);
   var minVersion = eslintFeatures.versionForRange(pkgEngines[0], pkgEngines[1]);
+  debug('minimum required engine version: ' + minVersion);
+
   var features = eslintFeatures.featureOfVersion(pkgEngines[0], minVersion);
+  debug('features found for engine: ' + minVersion);
   return features;
 };
 
