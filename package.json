@@ -1,6 +1,6 @@
 {
   "name": "eslint-config-features",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "Automatically configure eslint ecmaFeatures according to package.json `engines` field.",
   "repository": "parro-it/eslint-config-features",
   "license": "MIT",
